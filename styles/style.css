@@ -1,0 +1,78 @@
+/*
+#E8D0A9 orange tan zombie
+#B7AFA3 nomad orange
+#C1DAD6 blue green jetstream
+#F5FAFA catskill white
+#ACD1E9 blue regent st blue
+#6D929B gothic light blue
+*/
+*{
+  outline: none;
+}
+
+#body{
+  background-color: #F5FAFA;
+  width: 100vw;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+input[type="button"] {
+  border: none;
+}
+:-moz-any-link:focus {
+  outline: none;
+}
+
+#header{
+  background-color: #6D929B;
+  width: 100vw;
+  height: auto;
+  font-family: 'Ubuntu', sans-serif;
+  color: #F5FAFA;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.container{
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+}
+
+.collapse{
+  background-color: #F5FAFA;
+  
+}
+#buttonContainer{
+  display: inline-flex;
+  justify-content:space-between
+}
+
+.container{
+  background-color:#B7AFA3;
+  width: 100vw;
+  height: 50vh;
+}
+
+#countryDropdown{
+  justify-content: center;
+  background-color: #F5FAFA;
+  width: 80vw;
+}
+
+#dropdown-menu{
+  background-color: #F5FAFA;
+  margin: auto;
+  width: 80vw;
+
+}
+
+@media only screen and (min-width: 600px) {
+  #countryDropdown, 
+  #dropdown-menu{
+    width: 40vw;
+  }
+  
+  
+}
