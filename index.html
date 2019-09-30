@@ -8,74 +8,88 @@
     <title>Cities and Countries</title>
     <!-- styles -->
     <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- scripts -->
+    <script src="https://kit.fontawesome.com/2f245fa161.js" crossorigin="anonymous"></script>
 
 </head>
 
 <body id="body">
-    <div id="header">
-        <h1>Städer och länder</h1>
-        <div id="buttonContainer">
-            <button onclick="initialize()" id="btnShowCountries" class="btn" type="button" data-toggle="collapse"
-                data-target="#countryDropdown" aria-expanded="false" aria-controls="countryDropdown">
-                Välj land
-            </button>
-            <button id="btnLogin" class="btn" type="button" data-toggle="collapse" data-target="#dropdown-menu"
-                aria-expanded="false" aria-controls="dropdown-menu">
-                logga in
-            </button>
+
+    <!-- Navigation panel -->
+    <div class="w3-container">
+        <div class="w3-container w3-cell w3-cell-middle">
+            <h5>Länder och städer</h5>
+        </div>
+        <div class="w3-container w3-cell w3-cell-middle">
+            <a id="openLoginModal" href="#" class="w3-button"
+                onclick="document.getElementById('loginModal').style.display='block'">Login</a>
+        </div>
+        <div id="countryBar" class="w3-bar">
+            <button class="w3-bar-item w3-button tablink" onclick="openCountry(event, 'visited')">Besökta
+                städer</button>
+        </div>
+        <div id="sverige" class="w3-container country" style="display:none">
+            <p>sverige</p>
+        </div>
+        <div id="finland" class="w3-container country" style="display:none">
+            <p>finland</p>
+        </div>
+        <div id="norge" class="w3-container country" style="display:none">
+            <p>norge</p>
         </div>
     </div>
-    <div>
-        <div class="collapse" id="countryDropdown">
-            <div class="px-4 py-3">
-                <div class="form-group" id="countryContainer">
+
+    <!-- Login modal -->
+    <div id="loginModal" class="w3-modal">
+        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width: 600px">
+            <form class="w3-container">
+                <div class="w3-section">
+                    <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Ange användarnamn"
+                        name="usrname" required>
+                    <input class="w3-input w3-border" type="password" placeholder="Ange lösen" name="psw" required>
+                    <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Logga in</button>
+                    <input class="w3-check w3-margin-top" type="checkbox" checked="checked"> Kom ihåg mig
                 </div>
+            </form>
+            <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                <button onclick="document.getElementById('loginModal').style.display='none'" type="button"
+                    class="w3-button" style="background-color:#B7AFA3 ">Avbryt</button>
+                <span class="w3-right w3-padding">Glömt <a href="#">lösenord?</a></span>
             </div>
         </div>
-        <div class="collapse" id="dropdown-menu">
-            <form class="px-4 py-3">
-                <div class="form-group">
-                    <input type="email" class="form-control" id="dropDownUserName" placeholder="Ange ditt anvandarnamn">
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" id="dropDownPassword" placeholder="Ange losen">
-                </div>
-                <div class="form-group">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="dropDownRememberMe">
-                        <label for="dropDownRememberMe" class="form-check-label">
-                            Kom ihag mig
-                        </label>
-                    </div>
-                </div>
-                <button type="submit" class="btn" id="btnLogin">Logga in</button>
-                <a href="dropdown-item" href="#">Skapa en användare</a>
-                <a href="dropdown-item" href="#">Glomt lösen</a>
-            </form>
-        </div>
     </div>
-
-    <div class="container" id="countryContainer">
-    </div>
-
-
-
-
 
 
     <!-- scripts -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+    <script>
+        var modal = document.getElementById('loginModal')
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }        
+        function openCountry(event, country) {
+            var x, tablinks;
+            x = document.getElementsByClassName('country')
+
+            for (let i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName('tablink');
+
+            for (let i = 0; i < x.length; i++) {
+                tablinks[i].style.background = "#6D929B";
+            }
+
+            document.getElementById(country).style.display = "block";
+            event.currentTarget.style.backgroundcolor = "#E8D0A9";
+        }
+    </script>
+
     <script src="scripts/main.js"></script>
 </body>
 
