@@ -18,8 +18,8 @@
     <div id="header">
         <h1>Städer och länder</h1>
         <div id="buttonContainer">
-            <button class="btn" type="button" data-toggle="collapse" data-target="#countryDropdown"
-                aria-expanded="false" aria-controls="countryDropdown">
+            <button onclick="initialize()" id="btnShowCountries" class="btn" type="button" data-toggle="collapse"
+                data-target="#countryDropdown" aria-expanded="false" aria-controls="countryDropdown">
                 Välj land
             </button>
             <button id="btnLogin" class="btn" type="button" data-toggle="collapse" data-target="#dropdown-menu"
@@ -51,14 +51,14 @@
                         </label>
                     </div>
                 </div>
-                <button type="submit" class="btn">Logga in</button>
-                <a href="dropdown-item" href="#">Skapa en anvandare</a>
-                <a href="dropdown-item" href="#">Glomt losen</a>
+                <button type="submit" class="btn" id="btnLogin">Logga in</button>
+                <a href="dropdown-item" href="#">Skapa en användare</a>
+                <a href="dropdown-item" href="#">Glomt lösen</a>
             </form>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="countryContainer">
     </div>
 
 
