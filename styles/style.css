@@ -7,13 +7,46 @@
 #6D929B gothic light blue
 */
 
-body{
+body {
   background-color: #F5FAFA;
   font-family: 'Ubuntu', sans-serif;
 }
 
-.w3-container{
+.w3-container {
   font-family: 'Ubuntu', sans-serif;
   color: #F5FAFA;
-  background-color: #6D929B;
+  background-color: rgb(130, 77, 161);
+}
+
+#navigationBar {
+  position: sticky;
+  top: 0;
+}
+.fas{
+  margin-left: 10px;
+}
+
+footer {
+  position: fixed;
+  width: 100vw;
+  bottom: 0;
+  text-align: center;
+  margin: auto;
+}
+
+#countryButton{
+  font-weight: bold;
+  font-size: 1.3em
+}
+
+
+.w3-button{
+    background-color: rgb(130, 77, 161);
+}
+.w3-button:active{
+    background-color: rgb(130, 77, 161);
+  
+}
+.w3-button:hover{
+  background-color: rgb(130, 77, 161);
 }

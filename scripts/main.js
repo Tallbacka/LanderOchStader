@@ -31,34 +31,50 @@ async function getCityData() {
 // Appends the country buttons based on JSON data
 function drawCountry(countryData) {
     var countryContainer = document.getElementById('countryBar');
-    
+
     for (let i = 0; i < Object.values(countryData).length; i++) {
-        var button = document.createElement('button');
-        button.setAttribute('class', "w3-bar-item w3-button tablink");
-        button.setAttribute('id', countryData[i].id);
-        button.setAttribute('onclick', "openCountry(event, this(id))");
-        button.innerHTML =countryData[i].countryname;
-        countryContainer.insertAdjacentElement("afterbegin", button)
+        var hr = document.createElement('hr')
+
+        var a = document.createElement('a');
+        a.setAttribute('class', "w3-button w3-center");
+        a.setAttribute('onclick', "showCities(" + `'div${countryData[i].id}'` + ")")
+        a.setAttribute('id', "countryButton")
+        a.innerHTML = countryData[i].countryname;
+
+        var divCountry = document.createElement('div');
+        divCountry.setAttribute('class', "w3-container w3-center countryContainer");
+        divCountry.setAttribute('id', countryData[i].id);
+        
+        var divCity = document.createElement('div');
+        divCity.setAttribute('id', "div" + countryData[i].id);
+        divCity.setAttribute('class', "w3-hide w3-container w3-center cityContainer");
+
+        divCountry.appendChild(a);
+        divCountry.appendChild(divCity);
+        
+        countryContainer.appendChild(divCountry)
+        countryContainer.appendChild(hr)
     }
 }
 
 // Appends the city links based on JSON data
 function drawCities(cityData) {
-    
+    var cityContainer = document.getElementsByClassName("cityContainer")
 
-    for (let i = 0; i < dropdown.length; i++) {
-        for (let j = 0; j < Object.values(cityData).length; j++) {
+
+    for (let i = 0; i < cityContainer.length; i++) {
+        for (let j = 0; j < cityData.length; j++) {
             var a = document.createElement('a');
+            if (cityContainer[i].getAttribute("id") == "div"+cityData[j].countryid) {
+                a.setAttribute('class', "w3-button " + cityData[i].id);
+                a.setAttribute('id', "city" + cityData[j].countryid );
+                a.innerHTML = cityData[j].stadname;
 
-            if (dropdown[i].getAttribute("id") == cityData[j].countryid) {
-                
-            } else {
-                console.log("nothing in common");
+                cityContainer[i].appendChild(a)
             }
         }
     }
 }
-
 
 // Sorts the city data after population desc.
 function sortByPopulation(cityData) {
