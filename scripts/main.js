@@ -3,6 +3,10 @@
 const cities = "json/stad.json";
 const countries = "json/land.json";
 
+document.getElementById('body').onload = function () {
+    getCountryData();
+    getCityData();
+}
 
 // Countries json data retrival
 async function getCountryData() {
@@ -26,60 +30,49 @@ async function getCityData() {
 
 // Appends the country buttons based on JSON data
 function drawCountry(countryData) {
-    var sidebar = document.getElementById('sideNav');
-    
+    var countryContainer = document.getElementById('countryBar');
+
     for (let i = 0; i < Object.values(countryData).length; i++) {
-        var button = document.createElement('button');
-        button.setAttribute('class', "dropdown-btn");
-        button.setAttribute('id', countryData[i].id);
-        button.setAttribute('onclick', "toggleButtons(this.id)")
-        button.innerHTML = (countryData[i].countryname);
+        var hr = document.createElement('hr')
+
+        var a = document.createElement('a');
+        a.setAttribute('class', "w3-button w3-center");
+        a.setAttribute('onclick', "showCities(" + `'div${countryData[i].id}'` + ")")
+        a.setAttribute('id', "countryButton")
+        a.innerHTML = countryData[i].countryname;
+
+        var divCountry = document.createElement('div');
+        divCountry.setAttribute('class', "w3-container w3-center countryContainer");
+        divCountry.setAttribute('id', countryData[i].id);
         
-        var icon = document.createElement('i')
-        icon.setAttribute('class', "fa fa-caret-down");
+        var divCity = document.createElement('div');
+        divCity.setAttribute('id', "div" + countryData[i].id);
+        divCity.setAttribute('class', "w3-hide w3-container w3-center cityContainer");
+
+        divCountry.appendChild(a);
+        divCountry.appendChild(divCity);
         
-        var div = document.createElement('div');
-        div.setAttribute('id', "div" + countryData[i].id)
-        div.setAttribute('class', "dropdown-container")
-        
-        button.appendChild(icon);
-        sidebar.appendChild(button);
-        sidebar.insertAdjacentElement("beforeend", div);
+        countryContainer.appendChild(divCountry)
+        countryContainer.appendChild(hr)
     }
 }
 
 // Appends the city links based on JSON data
 function drawCities(cityData) {
-    var dropdown = document.getElementsByClassName('dropdown-btn');
-    console.log(dropdown.length);
-    console.log(cityData.length);
+    var cityContainer = document.getElementsByClassName("cityContainer")
 
-    for (let i = 0; i < dropdown.length; i++) {
-        for (let j = 0; j < Object.values(cityData).length; j++) {
+
+    for (let i = 0; i < cityContainer.length; i++) {
+        for (let j = 0; j < cityData.length; j++) {
             var a = document.createElement('a');
-
-            if (dropdown[i].getAttribute("id") == cityData[j].countryid) {
-                var divCities = document.getElementById("div" + dropdown[i].id)
-
+            if (cityContainer[i].getAttribute("id") == "div"+cityData[j].countryid) {
+                a.setAttribute('class', "w3-button " + cityData[i].id);
+                a.setAttribute('id', "city" + cityData[j].countryid );
                 a.innerHTML = cityData[j].stadname;
-                a.setAttribute('href', "#");
 
-                divCities.appendChild(a);
-            } else {
-                console.log("nothing in common");
+                cityContainer[i].appendChild(a)
             }
         }
-    }
-}
-
-/* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
-function toggleButtons(buttonNumber) {
-    var div = document.getElementById("div" + buttonNumber)
-
-    if (div.style.display === "block") {
-        div.style.display = "none";
-    } else {
-        div.style.display = "block";
     }
 }
 

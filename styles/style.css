@@ -7,78 +7,46 @@
 #6D929B gothic light blue
 */
 
-* {
-  outline: none;
-}
-
-#body {
+body {
   background-color: #F5FAFA;
-  width: 100vw;
   font-family: 'Ubuntu', sans-serif;
 }
 
-input[type="button"] {
-  border: none;
-}
-
-:-moz-any-link:focus {
-  outline: none;
-}
-
-#header {
-  background-color: #6D929B;
-  width: 100vw;
-  height: auto;
+.w3-container {
   font-family: 'Ubuntu', sans-serif;
   color: #F5FAFA;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
+  background-color: rgb(130, 77, 161);
 }
 
-.container {
+#navigationBar {
+  position: sticky;
+  top: 0;
+}
+.fas{
+  margin-left: 10px;
+}
+
+footer {
+  position: fixed;
   width: 100vw;
-  display: flex;
-  justify-content: center;
-  flex-flow: column;
-  height: auto;
-}
-
-.collapse {
-  background-color: #F5FAFA;
-}
-
-#buttonContainer {
-  display: inline-flex;
-  justify-content: space-between
-}
-
-#countryDropdown {
-  justify-content: center;
-  background-color: #F5FAFA;
-  width: 80vw;
-}
-
-#dropdown-menu {
-  background-color: #F5FAFA;
-  margin: auto;
-  width: 80vw;
-}
-
-.btn {
-  box-shadow: none !important;
-}
-
-.px-4 {
-  display: flex;
-  align-content: center;
-  flex-flow: column;
-  justify-content: center;
+  bottom: 0;
   text-align: center;
+  margin: auto;
 }
 
-@media only screen and (min-width: 600px) {
-  #countryDropdown, #dropdown-menu {
-    width: 40vw;
-  }
+#countryButton{
+  font-weight: bold;
+  font-size: 1.3em
+}
+
+
+.w3-button{
+    background-color: rgb(130, 77, 161);
+}
+.w3-button:active{
+    background-color: rgb(130, 77, 161);
+  
+}
+.w3-button:hover{
+  background-color: rgb(130, 77, 161);
 }
