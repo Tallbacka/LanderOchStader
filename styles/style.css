@@ -55,10 +55,16 @@ footer {
 #btnVisited{
  font-size: 15px;
  border-radius: 5px;
+ margin-bottom: 120px;
  border: none;
- background-color: greenyellow;
- 
+ background-color: rgb(75, 153, 51);
+}
 
+li{
+  list-style-type: none;
+  background-color: #fff;
+  color: black;
+  
 }
 
 .w3-button{

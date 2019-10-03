@@ -3,9 +3,10 @@ const cities = "json/stad.json";
 const countries = "json/land.json";
 
 getById('body').onload = function () {
-    getCountryData();
-    getCityData();
-    cityLookUp("div1", "Stockholm")
+    // getCountryData();
+    // getCityData();
+    // cityLookUp("div1", "Stockholm")
+    weatherAPI()
 }
 
 
@@ -81,12 +82,10 @@ function cityLookUp(buttonId, cityName) {
         .then(function (citydata) {
 
             let ul = getById('cityData'),
-                cityHeader = getById('cityName'),
                 btnId = buttonId.replace(/^\D+/g, '');
 
             for (let i = 0; i < citydata.length; i++) {
                 if (parseInt(btnId) === parseInt(citydata[i].id)) {
-                    cityHeader.innerHTML = citydata[i].stadname;
                     var li = createNode('li');
                     li.innerHTML = "Population: " + citydata[i].population;
                     removeElements(ul);
@@ -118,16 +117,32 @@ function initMap(cityData) {
 
 
     let lat = cityData.results[0].geometry.location.lat, //Expects that the first object in the array is correct "fingers crossed"
-        lng = cityData.results[0].geometry.location.lng; //Expects that the first object in the array is correct "fingers crossed"
-    console.log(lat + "-" + lng);
+        lng = cityData.results[0].geometry.location.lng, //Expects that the first object in the array is correct "fingers crossed"
+        cityCountry = cityData.results[0].formatted_address,
+        header = getById('cityCountry');
+
+    header.textContent = cityCountry;
 
     var city = { lat: lat, lng: lng };
     var map = new google.maps.Map(
         document.getElementById('map'), { zoom: 8, center: city });
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btnVisited)
-    // The marker, positioned at Tallbacka
-    var marker = new google.maps.Marker({ position: city, map: map, title: 'Här bor jag!!' });
+    map.controls[google.maps.ControlPosition.CENTER].push(btnVisited)
+    // marker centered on the city
+    var marker = new google.maps.Marker({ position: city, map: map, title: cityCountry });
 }
+
+function weatherAPI() {
+    var test = Fetcher("http://api.openweathermap.org/data/2.5/weather?q=Habo,se&appid=5f0554c94dbcc6659be19611694c7b59&units=metric");
+    console.log(test);
+}
+
+function Fetcher(url) {
+    fetch(url)
+        .then((resp) => resp.json())
+        .then(data => { return data })
+        .catch(err => console.log("A problem occured with your fetch operation\n", err.message));
+}
+
 
 
 function createUser() {
@@ -145,7 +160,9 @@ function sortByPopulation(cityData) {
     return cityData;
 }
 
-//Animation related functions
+// ------------------------------------------------------------------
+// Animation related functions
+// ------------------------------------------------------------------
 function w3_open() {
     document.getElementById("countryBar").style.display = "block";
 }
@@ -168,9 +185,34 @@ function showCities(id) {
         x.className = x.className.replace(" w3-show", "");
     }
 }
+// ------------------------------------------------------------------
+// Fetch functions
+// ------------------------------------------------------------------
+function Fetcher(url) {
+    return fetch(url)
+        .then(checkStatus)
+        .then(response => response.json())
+        .catch(error => console.log("Problems with your fetch operation", error))
+}
 
 
-//Helper functions
+
+
+// ------------------------------------------------------------------
+// Helper functions
+// ------------------------------------------------------------------
+function checkStatus(response) {
+    if (response.ok) {
+        return Promise.resolve(response);
+    } else {
+        return Promise.reject(new Error(response.statusText));
+    }
+}
+
+function appendText(element, text) {
+    return element.innerHTML = text;
+}
+
 function createNode(element) {
     return document.createElement(element);
 }
