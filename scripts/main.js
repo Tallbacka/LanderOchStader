@@ -1,37 +1,37 @@
+// ------------------------------------------------------------------
 //Inlämning Städer och länder Webbutveckling .Net
+// ------------------------------------------------------------------
+
 const cities = "json/stad.json";
 const countries = "json/land.json";
 
 getById('body').onload = function () {
-    // getCountryData();
-    // getCityData();
-    // cityLookUp("div1", "Stockholm")
-    weatherAPI()
+    getCountryData();
+    getCityData();
+    cityLookUp("div1", "Stockholm")
+
 }
 
 
-// Countries json data retrival
-async function getCountryData() {
-    let responseCountry = await fetch(countries);
-    let countryData = await responseCountry.json()
-    return countryData;
-} getCountryData()
-    .then(countryData => drawCountry(countryData))
-    .then(countryData => { return countryData })
-    .catch(err => console.log("A problem occured with your fetch operation", err.message));
+// ------------------------------------------------------------------
+// Fetches data from JSON files
+// ------------------------------------------------------------------
+function getCountryData() {
+    Fetcher(countries)
+        .then(countryData => drawCountry(countryData))
+}
 
-// Cities json data retrival
-async function getCityData() {
-    let responseCity = await fetch(cities);
-    let cityData = await responseCity.json()
-    return cityData;
-} getCityData()
-    .then(cityData => sortByPopulation(cityData))
-    .then(cityData => drawCities(cityData))
-    .then(cityData => { return cityData })
-    .catch(err => console.log(err));
+function getCityData() {
+    Fetcher(cities)
+        .then(cityData => sortByPopulation(cityData))
+        .then(cityData => drawCities(cityData))
+}
 
-// Appends the country buttons based on JSON data
+
+
+// ------------------------------------------------------------------
+// Creates element based on JSON data retrieved
+// ------------------------------------------------------------------
 function drawCountry(countryData) {
     var countryContainer = getById('countryBar');
 
@@ -45,11 +45,11 @@ function drawCountry(countryData) {
         a.setAttribute('id', "countryButton")
         a.innerHTML = countryData[i].countryname;
 
-        divCountry.setAttribute('class', "w3-bar w3-button w3-text-white w3-middle w3-large w3-border-bottom countryContainer");
+        divCountry.setAttribute('class', "w3-bar w3-button w3-middle w3-large w3-border-bottom countryContainer");
         divCountry.setAttribute('id', countryData[i].id);
 
         divCity.setAttribute('id', "div" + countryData[i].id);
-        divCity.setAttribute('class', "w3-hide w3-bar-item w3-text-white w3-middle w3-medium w3-border-bottom cityContainer");
+        divCity.setAttribute('class', "w3-hide w3-bar-itemw3-middle w3-medium w3-border-bottom cityContainer");
 
         append(divCountry, a)
         append(countryContainer, divCountry)
@@ -57,7 +57,6 @@ function drawCountry(countryData) {
     }
 }
 
-// Appends the city links based on JSON data
 function drawCities(cityData) {
     var cityContainer = document.getElementsByClassName("cityContainer")
 
@@ -77,8 +76,7 @@ function drawCities(cityData) {
 }
 
 function cityLookUp(buttonId, cityName) {
-    fetch(cities)
-        .then((resp) => resp.json())
+    Fetcher(cities)
         .then(function (citydata) {
 
             let ul = getById('cityData'),
@@ -97,54 +95,74 @@ function cityLookUp(buttonId, cityName) {
     getCityLocation(cityName);
 }
 
-// Sends a request for city location on google maps, and returns a json object.
-async function getCityLocation(name) {
-    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + name + "&key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck"
+// ------------------------------------------------------------------
+// Google maps related functions
+// ------------------------------------------------------------------
+function getCityLocation(cityName) {
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + cityName + "&key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck"
 
-    fetch(url)
-        .then((resp) => resp.json())
-        // .then(cityMap => console.log(cityMap))
-        .then(cityMap => initMap(cityMap))
+    Fetcher(url)
+        .then(cityMap => initMap(cityMap, cityName))
         .catch(err => console.log("A problem occured with your fetch operation\n", err.message))
 
 }
-// Calling the google API for inserting a map with a location marker without using an iframe
-function initMap(cityData) {
+function initMap(cityData, cityName) {
     var btnVisited = createNode('button');
     btnVisited.setAttribute('id', "btnVisited");
     btnVisited.setAttribute('onclick', "visited()");
     btnVisited.innerHTML = "Har besökt";
 
 
-    let lat = cityData.results[0].geometry.location.lat, //Expects that the first object in the array is correct "fingers crossed"
-        lng = cityData.results[0].geometry.location.lng, //Expects that the first object in the array is correct "fingers crossed"
+    let lat = parseFloat(cityData.results[0].geometry.location.lat), //Expects that the first object in the array is correct "fingers crossed"
+        lng = parseFloat(cityData.results[0].geometry.location.lng), //Expects that the first object in the array is correct "fingers crossed"
         cityCountry = cityData.results[0].formatted_address,
         header = getById('cityCountry');
 
     header.textContent = cityCountry;
 
-    var city = { lat: lat, lng: lng };
-    var map = new google.maps.Map(
-        document.getElementById('map'), { zoom: 8, center: city });
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 8,
+        center: {
+            lat: lat,
+            lng: lng
+        }
+    });
     map.controls[google.maps.ControlPosition.CENTER].push(btnVisited)
-    // marker centered on the city
-    var marker = new google.maps.Marker({ position: city, map: map, title: cityCountry });
+    // var marker = new google.maps.Marker({ 
+    //     position: city, 
+    //     map: map,
+    //     title: cityCountry
+    //  });
+
+    weatherAPI(cityName)
 }
 
-function weatherAPI() {
-    var test = Fetcher("http://api.openweathermap.org/data/2.5/weather?q=Habo,se&appid=5f0554c94dbcc6659be19611694c7b59&units=metric");
-    console.log(test);
+// ------------------------------------------------------------------
+// Weather related functions
+// ------------------------------------------------------------------
+
+function weatherAPI(name) {
+    // var url = "api.openweathermap.org/data/2.5/weather?lat={"+lat+"}&lon={"+lng+"}&units=metric"
+    // var url = "https://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=5f0554c94dbcc6659be19611694c7b59&units=metric"
+    var url = "http://api.openweathermap.org/data/2.5/weather?q=" + name + "&appid=5f0554c94dbcc6659be19611694c7b59&units=metric";
+    Fetcher(url)
+        .then(data => {
+            var weatherHeader = document.getElementById('weather')
+            var iconCode = data.weather[0].icon;
+            var iconPath = "http://openweathermap.org/img/w/" + iconCode + ".png";
+            var icon = getById('weatherIcon');
+            icon.setAttribute('src', iconPath)
+            // img.setAttribute('href', iconPath);
+            // appendChild(weatherHeader, img);
+            weatherHeader.innerHTML = data.weather[0].description + "<br>" +
+                "Temp: " + data.main.temp + "&deg" + "<br>" +
+                "Vindhastighet:  " + data.wind.speed + " m/s"
+        })
 }
 
-function Fetcher(url) {
-    fetch(url)
-        .then((resp) => resp.json())
-        .then(data => { return data })
-        .catch(err => console.log("A problem occured with your fetch operation\n", err.message));
-}
-
-
-
+// ------------------------------------------------------------------
+// User related functions
+// ------------------------------------------------------------------
 function createUser() {
     removeElements(loginData);
     var header = createNode('h3');
@@ -152,12 +170,6 @@ function createUser() {
 
     var button = getById('btnLogin');
     button.innerHTML = "Skapa";
-}
-
-// Sorts the city data after population desc.
-function sortByPopulation(cityData) {
-    cityData.sort(function (a, b) { return b.population - a.population });
-    return cityData;
 }
 
 // ------------------------------------------------------------------
@@ -185,8 +197,9 @@ function showCities(id) {
         x.className = x.className.replace(" w3-show", "");
     }
 }
+
 // ------------------------------------------------------------------
-// Fetch functions
+// Helper functions
 // ------------------------------------------------------------------
 function Fetcher(url) {
     return fetch(url)
@@ -195,12 +208,6 @@ function Fetcher(url) {
         .catch(error => console.log("Problems with your fetch operation", error))
 }
 
-
-
-
-// ------------------------------------------------------------------
-// Helper functions
-// ------------------------------------------------------------------
 function checkStatus(response) {
     if (response.ok) {
         return Promise.resolve(response);
@@ -208,6 +215,12 @@ function checkStatus(response) {
         return Promise.reject(new Error(response.statusText));
     }
 }
+
+function sortByPopulation(cityData) {
+    cityData.sort(function (a, b) { return b.population - a.population });
+    return cityData;
+}
+
 
 function appendText(element, text) {
     return element.innerHTML = text;
