@@ -49,7 +49,7 @@ function drawCountry(countryData) {
         divCountry.setAttribute('id', countryData[i].id);
 
         divCity.setAttribute('id', "div" + countryData[i].id);
-        divCity.setAttribute('class', "w3-hide w3-bar-itemw3-middle w3-medium w3-border-bottom cityContainer");
+        divCity.setAttribute('class', "w3-hide w3-bar-item w3-middle w3-medium w3-border-bottom cityContainer");
 
         append(divCountry, a)
         append(countryContainer, divCountry)
@@ -59,16 +59,20 @@ function drawCountry(countryData) {
 
 function drawCities(cityData) {
     var cityContainer = document.getElementsByClassName("cityContainer")
+    ul = createNode('ul')
+    
 
     for (let i = 0; i < cityContainer.length; i++) {
         for (let j = 0; j < cityData.length; j++) {
-            var a = createNode('a');
+            let a = createNode('a'),
+            li = createNode('li');
+
             if (cityContainer[i].getAttribute("id") === "div" + cityData[j].countryid) {
-                a.setAttribute('class', "w3-button w3-large");
+                a.setAttribute('class', "w3-button w3-medium");
                 a.setAttribute('id', "city" + cityData[j].id);
                 a.setAttribute('onclick', "cityLookUp(this.id, this.innerHTML)")
                 a.innerHTML = cityData[j].stadname;
-
+                
                 append(cityContainer[i], a)
             }
         }
@@ -142,8 +146,6 @@ function initMap(cityData, cityName) {
 // ------------------------------------------------------------------
 
 function weatherAPI(name) {
-    // var url = "api.openweathermap.org/data/2.5/weather?lat={"+lat+"}&lon={"+lng+"}&units=metric"
-    // var url = "https://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=5f0554c94dbcc6659be19611694c7b59&units=metric"
     var url = "http://api.openweathermap.org/data/2.5/weather?q=" + name + "&appid=5f0554c94dbcc6659be19611694c7b59&units=metric";
     Fetcher(url)
         .then(data => {
@@ -152,8 +154,7 @@ function weatherAPI(name) {
             var iconPath = "http://openweathermap.org/img/w/" + iconCode + ".png";
             var icon = getById('weatherIcon');
             icon.setAttribute('src', iconPath)
-            // img.setAttribute('href', iconPath);
-            // appendChild(weatherHeader, img);
+
             weatherHeader.innerHTML = data.weather[0].description + "<br>" +
                 "Temp: " + data.main.temp + "&deg" + "<br>" +
                 "Vindhastighet:  " + data.wind.speed + " m/s"
