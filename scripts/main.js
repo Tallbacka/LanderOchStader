@@ -1,12 +1,11 @@
 //Inlämning Städer och länder Webbutveckling .Net
-src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck"
 const cities = "json/stad.json";
 const countries = "json/land.json";
 
 getById('body').onload = function () {
     getCountryData();
     getCityData();
-    cityLookUp("city1")
+    cityLookUp("div1", "Stockholm")
 }
 
 
@@ -96,32 +95,38 @@ function cityLookUp(buttonId, cityName) {
             }
 
         })
-    getCityLocation();
+    getCityLocation(cityName);
 }
 
-async function getCityLocation() {
+// Sends a request for city location on google maps, and returns a json object.
+async function getCityLocation(name) {
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + name + "&key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck"
 
-    let mapCities = await fetch("https://maps.googleapis.com/maps/api/geocode/json?address=Habo&key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck");
-    let cityMap = await mapCities.json();
-    return cityMap;
-} getCityLocation()
-    .then(cityMap => console.log(cityMap))
-    .then(cityData => initMap(cityData))
-    .catch(err => console.log("A problem occured with your fetch operation\n", err.message))
+    fetch(url)
+        .then((resp) => resp.json())
+        // .then(cityMap => console.log(cityMap))
+        .then(cityMap => initMap(cityMap))
+        .catch(err => console.log("A problem occured with your fetch operation\n", err.message))
 
+}
 // Calling the google API for inserting a map with a location marker without using an iframe
-function initMap(location) {
+function initMap(cityData) {
     var btnVisited = createNode('button');
     btnVisited.setAttribute('id', "btnVisited");
     btnVisited.setAttribute('onclick', "visited()");
     btnVisited.innerHTML = "Har besökt";
 
-    var tallBacka = { lat: 57.929239, lng: 13.964798 };
+
+    let lat = cityData.results[0].geometry.location.lat, //Expects that the first object in the array is correct "fingers crossed"
+        lng = cityData.results[0].geometry.location.lng; //Expects that the first object in the array is correct "fingers crossed"
+    console.log(lat + "-" + lng);
+
+    var city = { lat: lat, lng: lng };
     var map = new google.maps.Map(
-        document.getElementById('map'), { zoom: 8, center: tallBacka });
+        document.getElementById('map'), { zoom: 8, center: city });
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btnVisited)
     // The marker, positioned at Tallbacka
-    // var marker = new google.maps.Marker({ position: tallBacka, map: map, title: 'Här bor jag!!' });
+    var marker = new google.maps.Marker({ position: city, map: map, title: 'Här bor jag!!' });
 }
 
 
