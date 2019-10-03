@@ -13,20 +13,24 @@
 
     <!-- scripts -->
     <script src="https://kit.fontawesome.com/2f245fa161.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
 
 </head>
 
 <body id="body">
 
     <!-- Navigation panel -->
-    <div id="navigationBar" class="w3-container">
-        <div class="w3-container w3-cell-row w3-cell-middle w3-mobile w3-center">
-            <h3>Länder & Städer</h3>
-            <a style="font-size: 20px" href="#" class="w3-button w3-block">Navigering<i class="fas fa-caret-square-down" onclick="showCities('countryBar')"></i></a>
-        </div>
-        <div id="countryBar" class="w3-bar w3-hide w3-center w3-mobile">
-            <a id="countryButton" class="w3-button">Besökta städer</a>
-            <hr>
+    <div id="navigationBar" class="w3-container w3-display-container w3-top w3-bottombar">
+        <button class="w3-cell w3-button w3-xxlarge" onclick="w3_open()">&#9776;</button>
+        <h3 class="w3-cell w3-center w3-display-middle">Länder & Städer</h3>
+        <a id="openLoginModal" href="#" class="w3-button w3-display-bottomright"
+            onclick="document.getElementById('loginModal').style.display='block'" style="margin-left:0">Logga in</a>
+    </div>
+    <div id="countryBar" class="w3-sidebar w3-bar-block w3-animate-left " style="display: none">
+        <button class="w3-bar w3-button w3-middle w3-large w3-border-bottom" onclick="w3_close()">Stäng <i
+                class="fas fa-window-close"></i></button>
+        <div class="w3-bar-item w3-large w3-button w3-center w3-border-bottom">
+            <a id="countryButton" class="w3-button">Besökt</a>
         </div>
     </div>
 
@@ -38,57 +42,51 @@
                     <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Ange användarnamn"
                         name="usrname" required>
                     <input class="w3-input w3-border" type="password" placeholder="Ange lösen" name="psw" required>
-                    <button class="w3-button w3-block w3-section w3-padding" type="submit" style="background-color:#B7AFA3">Logga in</button>
-                    <input class="w3-check w3-margin-top" type="checkbox" checked="checked"> Kom ihåg mig
+                    <button id="btnLogin" class="w3-button w3-block w3-section w3-padding" type="submit"
+                        style="background-color:#B7AFA3">Logga in</button>
+                    <div id="loginData" class="w3-container w3-middle">
+                        <input class="w3-check w3-margin-top" type="checkbox" checked="checked" id="chbRememberMe"> Kom
+                        ihåg
+                        mig
+                        <span class="w3-right w3-padding"><a href="#" id="createUser" onclick="createUser()">Skapa
+                                användare</a></a></span>
+                        <span class="w3-right w3-padding">Glömt <a href="#">lösenord?</a></span>
+
+                    </div>
+                    <button onclick="document.getElementById('loginModal').style.display='none'" type="button"
+                        class="w3-button w3-block" style="background-color:#B7AFA3 ">Avbryt</button>
                 </div>
             </form>
-            <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                <button onclick="document.getElementById('loginModal').style.display='none'" type="button"
-                    class="w3-button" style="background-color:#B7AFA3 ">Avbryt</button>
-                    <span class="w3-right w3-padding"><a href="#">Skapa användare</a></a></span>
-                <span class="w3-right w3-padding">Glömt <a href="#">lösenord?</a></span>
-            </div>
         </div>
     </div>
-    <div class="w3-container w3-mobile w3-red">
-        test
-        <div id="countryContent" class="w3-container w3-blue">
-            test
-            <div id="cityContent" class="w3-container w3-green">
-                test
+
+    <!-- main content -->
+    <div id="content" class="w3-content w3-container w3-display-bottommiddle w3-mobile">
+        <div id="countryContent" class="w3-center">
+            <h3 class="w3-cell" id="countryName"></h3>
+            <div id="cityContent" class="w3-container w3-cell-row ">
+                <h3 class="w3-border" id="cityCountry"></h3>
+                <div id="weatherData" class="w3-container w3-cell-row w3-center w3-border">
+                    <div class="w3-container w3-cell ">
+                        <img id="weatherIcon" src="" alt="weather icon">
+                    </div>
+                    <div class="w3-container w3-cell w3-left-align">
+                        <p id="weather" style="font-size: 0.8em"></p>
+                    </div>
+                </div>
+                <ul id="cityData" class="w3-ul w3-border"></ul>
+                <div id="map"></div>
             </div>
         </div>
 
     </div>
 
-
-    <footer>
-        <div class="w3-container w3-cell w3-cell-middle w3-mobile w3-center">
-            <a id="openLoginModal" href="#" class="w3-button"
-                onclick="document.getElementById('loginModal').style.display='block'" style="margin-left:0">Logga in</a>
-        </div>
-    </footer>
 
     <!-- scripts -->
-    <script>
-        var eventModal = document.getElementById('loginModal')
-        window.onclick = function (eventModal) {
-            if (eventModal.target == eventModal) {
-                eventModal.style.display = "none";
-            }
-        }
-
-        function showCities(id) {
-            var x = document.getElementById(id);
-            if (x.className.indexOf("w3-show") == -1) {
-                x.className += " w3-show";
-            } else {
-                x.className = x.className.replace(" w3-show", "");
-            }
-        }
-    </script>
-
     <script src="scripts/main.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck&callback=initMap&libraries=geometry,places"></script>
+    </script>
 </body>
 
 </html>
