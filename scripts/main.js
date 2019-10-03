@@ -1,5 +1,5 @@
 //Inlämning Städer och länder Webbutveckling .Net
-
+src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck"
 const cities = "json/stad.json";
 const countries = "json/land.json";
 
@@ -8,6 +8,7 @@ getById('body').onload = function () {
     getCityData();
     cityLookUp("city1")
 }
+
 
 // Countries json data retrival
 async function getCountryData() {
@@ -27,7 +28,7 @@ async function getCityData() {
 } getCityData()
     .then(cityData => sortByPopulation(cityData))
     .then(cityData => drawCities(cityData))
-    .then(cityData => {return cityData})
+    .then(cityData => { return cityData })
     .catch(err => console.log(err));
 
 // Appends the country buttons based on JSON data
@@ -46,7 +47,7 @@ function drawCountry(countryData) {
 
         divCountry.setAttribute('class', "w3-bar w3-button w3-text-white w3-middle w3-large w3-border-bottom countryContainer");
         divCountry.setAttribute('id', countryData[i].id);
-        
+
         divCity.setAttribute('id', "div" + countryData[i].id);
         divCity.setAttribute('class', "w3-hide w3-bar-item w3-text-white w3-middle w3-medium w3-border-bottom cityContainer");
 
@@ -63,41 +64,74 @@ function drawCities(cityData) {
     for (let i = 0; i < cityContainer.length; i++) {
         for (let j = 0; j < cityData.length; j++) {
             var a = createNode('a');
-            if (cityContainer[i].getAttribute("id") === "div"+cityData[j].countryid) {
+            if (cityContainer[i].getAttribute("id") === "div" + cityData[j].countryid) {
                 a.setAttribute('class', "w3-button w3-large");
-                a.setAttribute('id', "city" + cityData[j].id );
-                a.setAttribute('onclick', "cityLookUp(this.id)")
+                a.setAttribute('id', "city" + cityData[j].id);
+                a.setAttribute('onclick', "cityLookUp(this.id, this.innerHTML)")
                 a.innerHTML = cityData[j].stadname;
-                
+
                 append(cityContainer[i], a)
             }
         }
     }
 }
 
-function cityLookUp(buttonId){
+function cityLookUp(buttonId, cityName) {
     fetch(cities)
-    .then((resp) => resp.json())
-    .then(function(citydata){ 
+        .then((resp) => resp.json())
+        .then(function (citydata) {
 
-        let ul = getById('cityData'),
-            cityHeader = getById('cityName'),
-            btnId = buttonId.replace(/^\D+/g, '');
+            let ul = getById('cityData'),
+                cityHeader = getById('cityName'),
+                btnId = buttonId.replace(/^\D+/g, '');
 
-        for (let i = 0; i < citydata.length; i++) {
-            // console.log(btnId, citydata[i].id);
-            if (parseInt(btnId) === parseInt(citydata[i].id)) {
-                console.log("natt stammer");
-                cityHeader.innerHTML = citydata[i].stadname;
-                var li = createNode('li');
-                li.innerHTML= "Population: " + citydata[i].population;
-                removeElements(ul);
-                append(ul, li);
+            for (let i = 0; i < citydata.length; i++) {
+                if (parseInt(btnId) === parseInt(citydata[i].id)) {
+                    cityHeader.innerHTML = citydata[i].stadname;
+                    var li = createNode('li');
+                    li.innerHTML = "Population: " + citydata[i].population;
+                    removeElements(ul);
+                    append(ul, li);
+                }
             }
-            else{"inget stammer"};
-        }
-        
-    })
+
+        })
+    getCityLocation();
+}
+
+async function getCityLocation() {
+
+    let mapCities = await fetch("https://maps.googleapis.com/maps/api/geocode/json?address=Habo&key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck");
+    let cityMap = await mapCities.json();
+    return cityMap;
+} getCityLocation()
+    .then(cityMap => console.log(cityMap))
+    .then(cityData => initMap(cityData))
+    .catch(err => console.log("A problem occured with your fetch operation\n", err.message))
+
+// Calling the google API for inserting a map with a location marker without using an iframe
+function initMap(location) {
+    var btnVisited = createNode('button');
+    btnVisited.setAttribute('id', "btnVisited");
+    btnVisited.setAttribute('onclick', "visited()");
+    btnVisited.innerHTML = "Har besökt";
+
+    var tallBacka = { lat: 57.929239, lng: 13.964798 };
+    var map = new google.maps.Map(
+        document.getElementById('map'), { zoom: 8, center: tallBacka });
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(btnVisited)
+    // The marker, positioned at Tallbacka
+    // var marker = new google.maps.Marker({ position: tallBacka, map: map, title: 'Här bor jag!!' });
+}
+
+
+function createUser() {
+    removeElements(loginData);
+    var header = createNode('h3');
+    header.innerHTML = "Skapa användare";
+
+    var button = getById('btnLogin');
+    button.innerHTML = "Skapa";
 }
 
 // Sorts the city data after population desc.
@@ -105,31 +139,6 @@ function sortByPopulation(cityData) {
     cityData.sort(function (a, b) { return b.population - a.population });
     return cityData;
 }
-
-function visited() {
-
-  }
-
-
- function createUser(){
-     removeElements(loginData);
-     var header = createNode('h3');
-     header.innerHTML = "Skapa användare";
-
-     var button = getById('btnLogin');
-     button.innerHTML = "Skapa";
- }
-
-// Calling the google API for inserting a map with a location marker without using an iframe
-// function initMap(city) {
-//     // The location of Tallbacka
-//     var tallBacka = { lat: 57.929239, lng: 13.964798 };
-//     // The map, centered at Tallbacka
-//     var map = new google.maps.Map(
-//         document.getElementById('map'), { zoom: 8, center: tallBacka });
-//     // The marker, positioned at Tallbacka
-//     var marker = new google.maps.Marker({ position: tallBacka, map: map, title: 'Här bor jag!!' });
-// }
 
 //Animation related functions
 function w3_open() {
@@ -163,14 +172,14 @@ function createNode(element) {
 
 function append(parent, el) {
     return parent.appendChild(el);
-  }
+}
 
-function getById (ele) {  
+function getById(ele) {
     return document.getElementById(ele)
 }
 
-function removeElements(parent) { 
+function removeElements(parent) {
     while (parent.hasChildNodes()) {
         parent.removeChild(parent.lastChild);
     }
- }
+}

@@ -20,9 +20,11 @@
 <body id="body">
 
     <!-- Navigation panel -->
-    <div id="navigationBar" class="w3-container w3-display-container">
+    <div id="navigationBar" class="w3-container w3-display-container w3-top">
         <button class="w3-cell w3-button w3-xxlarge" onclick="w3_open()">&#9776;</button>
-        <h3 class="w3-cell w3-center w3-display-topmiddle">Länder & Städer</h3>
+        <h3 class="w3-cell w3-center w3-display-middle">Länder & Städer</h3>
+        <a id="openLoginModal" href="#" class="w3-button w3-display-bottomright"
+            onclick="document.getElementById('loginModal').style.display='block'" style="margin-left:0">Logga in</a>
     </div>
     <div id="countryBar" class="w3-sidebar w3-bar-block w3-animate-left " style="display: none">
         <button class="w3-bar w3-button w3-text-white w3-middle w3-large w3-border-bottom" onclick="w3_close()">Stäng <i
@@ -57,21 +59,20 @@
             </form>
         </div>
     </div>
-    <div id="content" class="w3-container w3-mobile">
-        Container
-        <div id="countryContent" class="w3-container w3-white">
+    <div id="content" class="w3-container w3-display-container w3-display-middle w3-mobile">
+        <div id="countryContent" class="w3-container w3-center w3-white w3-padding">
             <span class="w3-container w3-white">Land</span>
             <h3 class="w3-cell" id="countryName"></h3>
-            <div id="cityContent" class="w3-container w3-cell-row w3-mobile">
+            <div id="cityContent" class="w3-container w3-cell-row ">
                 <span>Stad</span>
-                <div class="w3-container w3-white w3-cell-row w3-display-container">
+                <div class="w3-container w3-white w3-cell-row">
                     <h3 class="w3-cell" id="cityName"></h3>
-                    <a href="#" class="w3-button w3-cell w3-display-right">Besökt</a>
                 </div>
                 <ul id="cityData" class="w3-ul w3-border w3-white">
                 </ul>
+                <div id="map"></div>
+                <span></span>
             </div>
-            <div id="map"></div>
         </div>
 
     </div>
@@ -79,16 +80,15 @@
 
     <footer>
         <div class="w3-container w3-cell w3-cell-middle w3-mobile w3-center">
-            <a id="openLoginModal" href="#" class="w3-button"
-                onclick="document.getElementById('loginModal').style.display='block'" style="margin-left:0">Logga in</a>
+
         </div>
     </footer>
 
     <!-- scripts -->
     <script src="scripts/main.js"></script>
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck&callback=initMap">
-        </script>
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck&callback=initMap&libraries=geometry,places"></script>
+    </script>
 </body>
 
 </html>
