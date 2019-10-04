@@ -114,20 +114,24 @@ function cityLookUp(buttonId, cityName) {
 // Add data to city table on visitedModal
 function drawVisitedModal() {
     removeChilds(getById('cityTable'));
-    getById('visitedModal').style.display = 'block';
-
+    
     let thead = createNode('thead'),
-        trh = createNode('tr'),
+    trh = createNode('tr'),
         thCity = createNode('th');
         thPop = createNode('th');
-
-        appendText(thCity, "Stad");
-        appendText(thPop, "Population");
+        
+        thCity.textContent = "Stad";
+        thPop.textContent = "Population";
+        
+        // appendText(thCity, "Stad");
+        // appendText(thPop, "Population");
 
         append(trh, thCity);
         append(trh, thPop);
         append(thead, trh);
-
+        append(getById('cityTable'), thead)
+        
+        getById('visitedModal').style.display = 'block';
     Fetcher(cities)
         .then(data => {
             for (let i = 0; i < data.length; i++) {
