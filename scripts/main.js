@@ -5,16 +5,26 @@
 const cities = "json/stad.json";
 const countries = "json/land.json";
 
+
+// ------------------------------------------------------------------
+// onload functions
+// ------------------------------------------------------------------
 getById('body').onload = function () {
     getCountryData();
     getCityData();
-    cityLookUp("div1", "Stockholm")
-
+    cityLookUp("div1", 'Stockholm');
+    // getVisitedLocations();
+    drawVisitedModal();
 }
+
+// ------------------------------------------------------------------
+// Eventlisteners
+// ------------------------------------------------------------------
+// document.getElementById('countryButton').addEventListener("click", drawVisitedModal());
 
 
 // ------------------------------------------------------------------
-// Fetches data from JSON files
+// Fetches data from local JSON files
 // ------------------------------------------------------------------
 function getCountryData() {
     Fetcher(countries)
@@ -49,7 +59,7 @@ function drawCountry(countryData) {
         divCountry.setAttribute('id', countryData[i].id);
 
         divCity.setAttribute('id', "div" + countryData[i].id);
-        divCity.setAttribute('class', "w3-hide w3-bar-item w3-middle w3-medium w3-border-bottom cityContainer");
+        divCity.setAttribute('class', "w3-hide w3-bar-item w3-medium w3-border-bottom cityContainer");
 
         append(divCountry, a)
         append(countryContainer, divCountry)
@@ -57,31 +67,33 @@ function drawCountry(countryData) {
     }
 }
 
+// Draw the cities within an expandable container appended below the corresponding city container
 function drawCities(cityData) {
     var cityContainer = document.getElementsByClassName("cityContainer")
     ul = createNode('ul')
-    
 
     for (let i = 0; i < cityContainer.length; i++) {
         for (let j = 0; j < cityData.length; j++) {
             let a = createNode('a'),
-            li = createNode('li');
+                li = createNode('li');
 
             if (cityContainer[i].getAttribute("id") === "div" + cityData[j].countryid) {
-                a.setAttribute('class', "w3-button w3-medium");
+                a.setAttribute('class', "w3-button w3-block w3-medium");
+                a.setAttribute('name', "cities")
                 a.setAttribute('id', "city" + cityData[j].id);
                 a.setAttribute('onclick', "cityLookUp(this.id, this.innerHTML)")
                 a.innerHTML = cityData[j].stadname;
-                
+
                 append(cityContainer[i], a)
             }
         }
     }
 }
 
+// Appends city data to the content elements
 function cityLookUp(buttonId, cityName) {
     Fetcher(cities)
-        .then(function (citydata) {
+        .then(citydata => {
 
             let ul = getById('cityData'),
                 btnId = buttonId.replace(/^\D+/g, '');
@@ -94,14 +106,42 @@ function cityLookUp(buttonId, cityName) {
                     append(ul, li);
                 }
             }
-
+            getById('countryBar').style.display = 'none';
         })
     getCityLocation(cityName);
 }
 
+// Add data to city table on visitedModal
+function drawVisitedModal() {
+    Fetcher(cities)
+        .then(data => {
+            for (let i = 0; i < data.length; i++) {
+                if (localStorage.hasOwnProperty(data[i].stadname)) {
+                    let tBody = createNode('tbody'),
+                        tr = createNode('tr'),
+                        tdCity = createNode('td'),
+                        tdPop = createNode('td'),
+                        cityTable = getById('cityTable');
+
+                    appendText(tdCity, data[i].stadname);
+                    appendText(tdPop, data[i].population);
+                    append(tr, tdCity);    
+                    append(tr, tdPop);
+                    append(tBody, tr)  
+                    append(cityTable, tBody);
+                }
+            }
+            sumPopulation();
+        })
+  }
+
+
+
 // ------------------------------------------------------------------
 // Google maps related functions
 // ------------------------------------------------------------------
+
+// Fetching location data from google maps api and calling the init map function
 function getCityLocation(cityName) {
     var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + cityName + "&key=AIzaSyDXoktJ4NGVFwy52MuWTQMyNoNJzmIU3ck"
 
@@ -110,10 +150,12 @@ function getCityLocation(cityName) {
         .catch(err => console.log("A problem occured with your fetch operation\n", err.message))
 
 }
+
+// initialize the map, chosen city centered on the map and calling the weather api
 function initMap(cityData, cityName) {
     var btnVisited = createNode('button');
     btnVisited.setAttribute('id', "btnVisited");
-    btnVisited.setAttribute('onclick', "visited()");
+    btnVisited.setAttribute('onclick', "beenThere()");
     btnVisited.innerHTML = "Har besökt";
 
 
@@ -141,10 +183,13 @@ function initMap(cityData, cityName) {
     weatherAPI(cityName)
 }
 
+
+
 // ------------------------------------------------------------------
 // Weather related functions
 // ------------------------------------------------------------------
 
+// fetching weather data based on the city selected
 function weatherAPI(name) {
     var url = "http://api.openweathermap.org/data/2.5/weather?q=" + name + "&appid=5f0554c94dbcc6659be19611694c7b59&units=metric";
     Fetcher(url)
@@ -162,16 +207,65 @@ function weatherAPI(name) {
 }
 
 // ------------------------------------------------------------------
-// User related functions
+// Localstorage related functions
+// ------------------------------------------------------------------
+
+// Adds data or check if data excists in localstorage
+function beenThere() {
+    let header = getById('cityCountry').textContent,
+        temp = header.split(',');
+    console.log(temp[0]);
+    if (!(localStorage.hasOwnProperty(temp[0]))) {
+        localSet(temp[0], temp[0])
+    } else {
+        alert("Här har du redan varit!")
+    }
+}
+
+// sum the population based on visisted cities
+function sumPopulation() {
+
+    let sumPop = 0;
+
+    Fetcher(cities)
+        .then(data => {
+            for (let i = 0; i < data.length; i++) {
+                if (localStorage.hasOwnProperty(data[i].stadname)) {
+                    sumPop += parseInt(data[i].population)
+                }
+            }
+            console.log(sumPop);
+            var h3Pop = getById('sumPeople');
+            appendText(h3Pop, sumPop +" st")
+        })
+}
+
+function clearLocalstorage(){
+    localStorage.clear();
+}
+// ------------------------------------------------------------------
+// User related functions -- Under construction
 // ------------------------------------------------------------------
 function createUser() {
-    removeElements(loginData);
-    var header = createNode('h3');
+    var modal = getById("modal");
+    removeElements(modal);
+    let header = createNode('h3')
+    inputUser = createNode('input'),
+        inputPass = createNode('input'),
+        btnCreate = createNode('button'),
+        btnCancel = createNode('button');
+
+    header.setAttribute('class', "w3-container w3-center")
     header.innerHTML = "Skapa användare";
 
-    var button = getById('btnLogin');
-    button.innerHTML = "Skapa";
+    inputUser.setAttribute('class', "w3-input w3-border")
+
+
+    append(modal, header)
 }
+
+function verifyUser(param) { }
+
 
 // ------------------------------------------------------------------
 // Animation related functions
@@ -202,6 +296,14 @@ function showCities(id) {
 // ------------------------------------------------------------------
 // Helper functions
 // ------------------------------------------------------------------
+
+function localGet(key) {
+    return localStorage.getItem(key)
+}
+
+function localSet(key, value) {
+    return localStorage.setItem(key, value)
+}
 function Fetcher(url) {
     return fetch(url)
         .then(checkStatus)
@@ -227,6 +329,10 @@ function appendText(element, text) {
     return element.innerHTML = text;
 }
 
+function setAtt(element, attribute, name) {
+    return element.setAttribute(attribute, name)
+}
+
 function createNode(element) {
     return document.createElement(element);
 }
@@ -237,6 +343,10 @@ function append(parent, el) {
 
 function getById(ele) {
     return document.getElementById(ele)
+}
+
+function getByName(ele) {
+    return document.getElementsByName(ele)
 }
 
 function removeElements(parent) {

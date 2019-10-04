@@ -23,22 +23,22 @@
     <div id="navigationBar" class="w3-container w3-display-container w3-top w3-bottombar">
         <button class="w3-cell w3-button w3-xxlarge" onclick="w3_open()">&#9776;</button>
         <h3 class="w3-cell w3-center w3-display-middle">Länder & Städer</h3>
-        <a id="openLoginModal" href="#" class="w3-button w3-display-bottomright"
-            onclick="document.getElementById('loginModal').style.display='block'" style="margin-left:0">Logga in</a>
+        <a href="#" class="w3-button w3-display-bottomright" onclick="clearLocalstorage()">Rensa listan</a>
     </div>
-    <div id="countryBar" class="w3-sidebar w3-bar-block w3-animate-left " style="display: none">
+    <div id="countryBar" class="w3-sidebar w3-bar-block w3-animate-left " style="display: none; max-width: 150px;">
         <button class="w3-bar w3-button w3-middle w3-large w3-border-bottom" onclick="w3_close()">Stäng <i
                 class="fas fa-window-close"></i></button>
         <div class="w3-bar-item w3-large w3-button w3-center w3-border-bottom">
-            <a id="countryButton" class="w3-button">Besökt</a>
+            <a id="countryButton" class="w3-button"
+                onclick="document.getElementById('visitedModal').style.display='block'">Besökt</a>
         </div>
     </div>
 
-    <!-- Login modal -->
-    <div id="loginModal" class="w3-modal">
+    <!-- Login modal // Under construction-->
+    <div id="loginModal" class="w3-modal" onclick="this.style.display='none'">
         <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width: 400px">
             <form class="w3-container">
-                <div class="w3-section">
+                <div id="modal" class="w3-section">
                     <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Ange användarnamn"
                         name="usrname" required>
                     <input class="w3-input w3-border" type="password" placeholder="Ange lösen" name="psw" required>
@@ -60,6 +60,35 @@
         </div>
     </div>
 
+    <!-- visited modal -->
+    <div id="visitedModal" class="w3-modal" onclick="this.style.display='none'">
+        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width: 600px; height:700px ;">
+            <div id="modal" class="w3-section w3-container">
+                <div id="contentVisited" class="w3-content w3-container w3-display-bottommiddle w3-mobile">
+                    <div class="w3-container">
+                        <h3 class=" w3-container w3-center">Besökta städer</h3>
+                        <hr>
+                        <div id="cityVisited" class="w3-container w3-cell-row">
+                            <table id="cityTable" class="w3-table  w3-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Stad</th>
+                                        <th>Population</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            
+                        </div>
+                        <!-- <div id="mapVisited"></div> -->
+                    </div>
+                    <h4 class="w3-cell w3-center w3-margin w3-block">Under dina resor kan du ha träffat så här många personer</h4>
+                    <h4 id="sumPeople" class="w3-block w3-center w3-margin w3-border w3-text-bold"></h4>
+                </div>
+            </div>
+            <a href="#" class="w3-button w3-block w3-display-topright w3-border" onclick="this.style.display='none'">X</a>
+        </div>
+    </div>
+
     <!-- main content -->
     <div id="content" class="w3-content w3-container w3-display-bottommiddle w3-mobile">
         <div id="countryContent" class="w3-center">
@@ -78,7 +107,6 @@
                 <div id="map"></div>
             </div>
         </div>
-
     </div>
 
 
