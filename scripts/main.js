@@ -2,8 +2,8 @@
 //Inlämning Städer och länder Webbutveckling .Net
 // ------------------------------------------------------------------
 
-const cities = "json/stad.json";
-const countries = "json/land.json";
+const cities = "/json/stad.json";
+const countries = "/json/land.json";
 
 
 // ------------------------------------------------------------------
