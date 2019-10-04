@@ -207,7 +207,7 @@ function initMap(cityData, cityName) {
 
 // fetching weather data based on the city selected
 function weatherAPI(name) {
-    var url = "http://api.openweathermap.org/data/2.5/weather?q=" + name + "&appid=5f0554c94dbcc6659be19611694c7b59&units=metric";
+    var url = "https://api.openweathermap.org/data/2.5/weather?q=" + name + "&appid=5f0554c94dbcc6659be19611694c7b59&units=metric";
     Fetcher(url)
         .then(data => {
             var weatherHeader = document.getElementById('weather')
