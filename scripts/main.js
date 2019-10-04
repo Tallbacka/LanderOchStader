@@ -13,14 +13,11 @@ getById('body').onload = function () {
     getCountryData();
     getCityData();
     cityLookUp("div1", 'Stockholm');
-    // getVisitedLocations();
-    // drawVisitedModal();
 }
 
 // ------------------------------------------------------------------
 // Eventlisteners
 // ------------------------------------------------------------------
-// document.getElementById('countryButton').addEventListener("click", drawVisitedModal());
 
 
 // ------------------------------------------------------------------
@@ -114,24 +111,21 @@ function cityLookUp(buttonId, cityName) {
 // Add data to city table on visitedModal
 function drawVisitedModal() {
     removeChilds(getById('cityTable'));
-    
-    let thead = createNode('thead'),
-    trh = createNode('tr'),
-        thCity = createNode('th');
-        thPop = createNode('th');
-        
-        thCity.textContent = "Stad";
-        thPop.textContent = "Population";
-        
-        // appendText(thCity, "Stad");
-        // appendText(thPop, "Population");
 
-        append(trh, thCity);
-        append(trh, thPop);
-        append(thead, trh);
-        append(getById('cityTable'), thead)
-        
-        getById('visitedModal').style.display = 'block';
+    let thead = createNode('thead'),
+        trh = createNode('tr'),
+        thCity = createNode('th');
+    thPop = createNode('th');
+
+    thCity.textContent = "Stad";
+    thPop.textContent = "Population";
+
+    append(trh, thCity);
+    append(trh, thPop);
+    append(thead, trh);
+    append(getById('cityTable'), thead)
+
+    getById('visitedModal').style.display = 'block';
     Fetcher(cities)
         .then(data => {
             for (let i = 0; i < data.length; i++) {
@@ -144,18 +138,15 @@ function drawVisitedModal() {
 
                     appendText(tdCity, data[i].stadname);
                     appendText(tdPop, data[i].population);
-                    append(tr, tdCity);    
+                    append(tr, tdCity);
                     append(tr, tdPop);
-                    append(tBody, tr)  
+                    append(tBody, tr)
                     append(cityTable, tBody);
                 }
             }
             sumPopulation();
-
         })
-  }
-
-
+}
 
 // ------------------------------------------------------------------
 // Google maps related functions
@@ -194,11 +185,6 @@ function initMap(cityData, cityName) {
         }
     });
     map.controls[google.maps.ControlPosition.CENTER].push(btnVisited)
-    // var marker = new google.maps.Marker({ 
-    //     position: city, 
-    //     map: map,
-    //     title: cityCountry
-    //  });
 
     weatherAPI(cityName)
 }
@@ -234,7 +220,6 @@ function weatherAPI(name) {
 function beenThere() {
     let header = getById('cityCountry').textContent,
         temp = header.split(',');
-    console.log(temp[0]);
     if (!(localStorage.hasOwnProperty(temp[0]))) {
         localSet(temp[0], temp[0])
     } else {
@@ -254,13 +239,12 @@ function sumPopulation() {
                     sumPop += parseInt(data[i].population)
                 }
             }
-            console.log(sumPop);
             var h3Pop = getById('sumPeople');
-            appendText(h3Pop, sumPop +" st")
+            appendText(h3Pop, sumPop + " st")
         })
 }
 
-function clearLocalstorage(){
+function clearLocalstorage() {
     localStorage.clear();
 }
 // ------------------------------------------------------------------

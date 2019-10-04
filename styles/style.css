@@ -76,12 +76,5 @@ li{
 }
 
 .w3-button{
-    background-color: #fff);
-}
-.w3-button:active{
-    background-color: rgb(130, 77, 161);
-  
-}
-.w3-button:hover{
-  background-color: rgb(130, 77, 161);
+    background-color: #fff
 }
