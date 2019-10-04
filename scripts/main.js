@@ -14,7 +14,7 @@ getById('body').onload = function () {
     getCityData();
     cityLookUp("div1", 'Stockholm');
     // getVisitedLocations();
-    drawVisitedModal();
+    // drawVisitedModal();
 }
 
 // ------------------------------------------------------------------
@@ -102,7 +102,7 @@ function cityLookUp(buttonId, cityName) {
                 if (parseInt(btnId) === parseInt(citydata[i].id)) {
                     var li = createNode('li');
                     li.innerHTML = "Population: " + citydata[i].population;
-                    removeElements(ul);
+                    removeChilds(ul);
                     append(ul, li);
                 }
             }
@@ -113,6 +113,21 @@ function cityLookUp(buttonId, cityName) {
 
 // Add data to city table on visitedModal
 function drawVisitedModal() {
+    removeChilds(getById('cityTable'));
+    getById('visitedModal').style.display = 'block';
+
+    let thead = createNode('thead'),
+        trh = createNode('tr'),
+        thCity = createNode('th');
+        thPop = createNode('th');
+
+        appendText(thCity, "Stad");
+        appendText(thPop, "Population");
+
+        append(trh, thCity);
+        append(trh, thPop);
+        append(thead, trh);
+
     Fetcher(cities)
         .then(data => {
             for (let i = 0; i < data.length; i++) {
@@ -132,6 +147,7 @@ function drawVisitedModal() {
                 }
             }
             sumPopulation();
+
         })
   }
 
@@ -248,7 +264,7 @@ function clearLocalstorage(){
 // ------------------------------------------------------------------
 function createUser() {
     var modal = getById("modal");
-    removeElements(modal);
+    removeChilds(modal);
     let header = createNode('h3')
     inputUser = createNode('input'),
         inputPass = createNode('input'),
@@ -349,7 +365,7 @@ function getByName(ele) {
     return document.getElementsByName(ele)
 }
 
-function removeElements(parent) {
+function removeChilds(parent) {
     while (parent.hasChildNodes()) {
         parent.removeChild(parent.lastChild);
     }
